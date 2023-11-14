@@ -5,7 +5,7 @@ const { response, request } = require('express')
 const {MongoClient, ObjectId} = require('mongodb')
 require('dotenv').config()
 
-// const main = require("./public/main.js") remvoed to get main.js to work
+// const main = require("./public/main.js") removed to get main.js to work
 
 
 
