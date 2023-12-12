@@ -10,6 +10,7 @@ const {MongoClient, ObjectId} = require('mongodb')
 require('dotenv').config()
 // import dotenv from 'dotenv'
 // dotenv.config()
+// const myJSXModule = require('./node_modules/jsx')
 
 
 // const main = require("./public/main.js") removed to get main.js to work
@@ -43,7 +44,7 @@ let db,
     }
  mongoConnect()
     
-app.set('view engine', 'ejs')
+app.set('view engine', 'html')
 app.use(express.static('public'))
 app.use(express.urlencoded({extended:true}))// in place of body-parser
 app.use(express.json())// in place of body-parser
@@ -55,7 +56,8 @@ app.get('/', async (request, response)=>{
     try{
         const listOfUnits2 = await collection.distinct('name',{civs: {$in:['ab']}})
         const result = await listOfUnits2
-        response.render('main.jsx', {info: result});
+        // response.render('index.html', {info: result});
+        response.sendFile('index.html', {root: '..'})
     }
     catch(err){
         console.log(err);

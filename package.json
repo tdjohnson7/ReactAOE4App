@@ -2,7 +2,6 @@
   "name": "aoe4-unit-counter-calculator",
   "private": true,
   "version": "0.0.0",
-  "proxy": "http://localhost:8001",
   "type": "module",
   "scripts": {
     "start": "vite build",
@@ -36,5 +35,6 @@
   "bugs": {
     "url": "https://github.com/tdjohnson7/ReactAOE4App/issues"
   },
-  "homepage": "https://github.com/tdjohnson7/ReactAOE4App#readme"
+  "homepage": "https://github.com/tdjohnson7/ReactAOE4App#readme",
+  "proxy": "http://localhost:8001"
 }
