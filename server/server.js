@@ -26,11 +26,11 @@ let db,
     const mongoConnect = async() =>{
         try{
             const client = await MongoClient.connect(dbConnectionString, {useUnifiedTopology: true, useNewUrlParser: true})
-            
+            dbConnectionString.startsWith('X')
             db = await client.db(dbName)
             console.log(`Connected to Database`)
             collection = await db.collection('AOE42ndCollection')
-            collection2 = await db.collection('AOE4TechCollection')
+            collection2 = await db.collection('AOE42ndTechCollection')
             app.listen(process.env.PORT || PORT, () => {
                 console.log(`Server is running on port ${process.env.PORT}`)
             })
@@ -44,7 +44,7 @@ let db,
     }
  mongoConnect()
     
-app.set('view engine', 'html')
+// app.set('view engine', 'html')
 app.use(express.static('public'))
 app.use(express.urlencoded({extended:true}))// in place of body-parser
 app.use(express.json())// in place of body-parser
@@ -52,17 +52,18 @@ app.use(cors())
 
 //renders the main page with the inputs
 
-app.get('/', async (request, response)=>{
-    try{
-        const listOfUnits2 = await collection.distinct('name',{civs: {$in:['ab']}})
-        const result = await listOfUnits2
-        // response.render('index.html', {info: result});
-        response.sendFile('index.html', {root: '..'})
-    }
-    catch(err){
-        console.log(err);
-    }
-})
+// app.get('/', async (request, response)=>{
+//     try{
+//         const listOfUnits2 = await collection.distinct('name',{civs: {$in:['ab']}})
+//         const result = await listOfUnits2
+//         // response.render('index.html', {info: result});
+//         // console.log(response)
+//         response.sendFile(path.join(__dirname + '/index.html'), {info: result})
+//     }
+//     catch(err){
+//         console.log(err);
+//     }
+// })
 
 app.post('/getUnits', async (request, response)=>{
     
@@ -105,14 +106,16 @@ app.post('/getSelectTechs', async (request, response)=>{
 
         const filter2 = {civs:{ $in: [request.body.selectCiv]}, effectedUnitIds: {$in: [request.body.selectText.toLowerCase().replace(' ','-')]}, minAge: {$lte: Number(request.body.selectAge)}}
 
-        const client = await MongoClient.connect(
-        'mongodb+srv://tdjohnson91:Mongo1011657@cluster0.qauwu.mongodb.net/?retryWrites=true&w=majority',
-        { useNewUrlParser: true, useUnifiedTopology: true }
-  );
-        const coll = client.db('AOE4').collection('AOE42ndTechCollection');
-        const cursor = await coll.find(filter2);
+//         const client = await MongoClient.connect(
+//         {mongoConnectionString},
+//         { useNewUrlParser: true, useUnifiedTopology: true }
+//   );
+        // const coll = client.db('AOE4').collection('AOE42ndTechCollection');
+        // const cursor = await coll.find(filter2);
+        // let result = await cursor.toArray();
+        // await client.close();
+        const cursor = await collection2.find(filter2);
         let result = await cursor.toArray();
-        await client.close();
             
         if(result.length == 0){
             result = [{name: 'No Techs to Display'}]
