@@ -35,7 +35,7 @@ let db,
             console.log(`Connected to Database`)
             collection = await db.collection('apostrophe test')
             collection2 = await db.collection('AOE43rdTechCollection')
-            app.listen(process.env.PORT || PORT, () => {
+            app.listen(process.env.PORT || '0.0.0.0', () => {
                 console.log(`Server is running on port ${process.env.PORT}`)
             })
             
