@@ -1,16 +1,20 @@
-const express = require('express')
-// import express from "express"
+// const express = require('express')
+import express from "express"
 const app = express()
-const cors = require('cors')
-// import cors from "cors"
-const { response, request } = require('express')
-// import {response, request } from 'express'
-const {MongoClient, ObjectId} = require('mongodb')
-// import { MongoClient, ObjectId } from 'mongodb'
-require('dotenv').config()
-// import dotenv from 'dotenv'
-// dotenv.config()
-// const myJSXModule = require('./node_modules/jsx')
+// const cors = require('cors')
+import cors from "cors"
+// const { response, request } = require('express')
+import {response, request } from 'express'
+// const {MongoClient, ObjectId} = require('mongodb')
+import { MongoClient, ObjectId } from 'mongodb'
+// require('dotenv').config()
+import dotenv from 'dotenv'
+dotenv.config()
+
+
+import civs from '../civs.js';
+
+
 
 
 // const main = require("./public/main.js") removed to get main.js to work
@@ -29,8 +33,8 @@ let db,
             dbConnectionString.startsWith('X')
             db = await client.db(dbName)
             console.log(`Connected to Database`)
-            collection = await db.collection('AOE42ndCollection')
-            collection2 = await db.collection('AOE42ndTechCollection')
+            collection = await db.collection('apostrophe test')
+            collection2 = await db.collection('AOE43rdTechCollection')
             app.listen(process.env.PORT || PORT, () => {
                 console.log(`Server is running on port ${process.env.PORT}`)
             })
@@ -68,32 +72,94 @@ app.use(cors())
 app.post('/getUnits', async (request, response)=>{
     
     try{
-        const units = await db.collection('AOE42ndCollection').distinct('name',{civs: {$in:[request.body.selectedCiv]}})
-        // console.log('units', units)
+        const units = await collection.distinct('baseId',{civs: {$in:[request.body.selectedCiv]}})
 
-        response.json(units)
+
+// const agg = [
+//     {
+//         '$match': {
+//           'civs': request.body.selectedCiv
+//         }
+//       }, {
+//         '$group': {
+//           '_id': '$baseId', 
+//           'pbgid': {
+//             '$first': '$pbgid'
+//           }
+//         }
+//       }
+//   ];
+
+//   const cursor = await collection.aggregate(agg)
+//   const result = await cursor.toArray()
+
+    // result.forEach((obj)=>
+    //     obj._id.includes("-") 
+    //         ? obj._id = obj._id.split('-').map((word)=>word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+    //         : obj._id = obj._id.charAt(0).toUpperCase() + obj._id.slice(1))
+    
+    console.log('units', units)
+
+    const unitsMod = await units.map((unit)=>
+        unit.includes("-") 
+            ? unit.split('-').map((word)=>word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+            : unit.charAt(0).toUpperCase() + unit.slice(1)) 
+        
+        // .split('-').map((word)=>word.charAt[0].toUpperCase() + slice(1)).join(' ')
+
+    //     const arrayResult = result.map(obj => Object.values(obj))
+    //     const arrayResultAlphabetized = arrayResult.sort((a,b)=>{
+    //         if (a[0] > b[0]) return 1;
+    //         if (a[0] < b [0]) return -1
+    // })
+        // console.log("arrayResultAlphabetized", arrayResultAlphabetized)
+        // console.log(arrayResultAlphabetized)
+        // response.json(arrayResultAlphabetized)
+        console.log('unitsMod', unitsMod)
+        response.json(unitsMod)
     }
     catch(err){
         console.log(err)
     }
 })
-
+//dont need ages since the data changed to include every unit in every age
 app.post('/getSelectAge', async (request, response)=>{    
     try{
-        const itemsAges = await db.collection('AOE42ndCollection').find({'name': request.body.selectText, 'civs':{$in: [request.body.selectCiv.toLowerCase()]}},{projection: {age: 1, _id: 0}}).sort({age: 1})
-        const result = await itemsAges.toArray();    
-        await itemsAges.close();
-        const addMissingAges = (array) => {
-            array.sort((a,b)=>a.age - b.age)
-            for(i=array[0].age;i<=4;i++){
-                if(!array.some(x=> x.age == i)){
-                    array.push({age: i})
-            }}
-           return array.sort((a,b)=>a.age - b.age)
+        function reverseFormat(unit) {
+            return unit.includes(" ") 
+                ? unit.split(' ').map(word => word.charAt(0).toLowerCase() + word.slice(1)).join('-') 
+                : unit.charAt(0).toLowerCase() + unit.slice(1);
         }
-        const result2 = addMissingAges(result)
-        console.log(result2)
-        response.json(result2);
+
+        console.log('selectedText', request.body.selectText)
+        console.log('reverse', reverseFormat(request.body.selectText))
+        const reverseSelectedText = reverseFormat(request.body.selectText)
+        const itemsAges = await collection.find({'baseId': reverseSelectedText,'civs':{$in: [request.body.selectCiv.toLowerCase()]}},{projection: {age: 1, _id: 0}}).sort({age: 1})
+        // console.log('itemsAges', itemsAges)
+        const result = await itemsAges.toArray();
+        console.log('result', result)    
+        await itemsAges.close();
+        // const addMissingAges = (array) => {
+        //     array.sort((a,b)=>a.age - b.age)
+        //     for(i=array[0].age;i<=4;i++){
+        //         if(!array.some(x=> x.age == i)){
+        //             array.push({age: i})
+        //     }}
+        //    return array.sort((a,b)=>a.age - b.age)
+        // }
+        // const result2 = addMissingAges(result)
+        // console.log(result2)
+        // response.json(result2);
+        let valuesOnly = result.map(x=>x.age)
+        
+        if(valuesOnly.includes(4)){valuesOnly = valuesOnly}
+        else{let i= 1; while(!valuesOnly.includes(4)){
+            valuesOnly.push(valuesOnly[0] + i)
+            i++
+        }}
+        
+        response.json(valuesOnly);
+        
     }
     catch(err){
         console.log(err)
@@ -132,64 +198,109 @@ app.post('/getSelectTechs', async (request, response)=>{
 //grab the values within the dropdown list and returns their stats to calculate which team wins and then renders the results page
 app.post('/calculate', async (request, response)=>{
     try{
+        console.log(request.body)
         let unitObject1 = await collection.findOne({'name': request.body.unit1, 'civs': {$in: [request.body.civ1]}, 'age': Number(request.body.age1)})
         let unitObject2 = await collection.findOne({'name': request.body.unit2, 'civs': {$in: [request.body.civ2]}, 'age': Number(request.body.age2)})
         
+        console.log('unitObject1', unitObject1)
+        console.log('request.body', request.body)
+
         unitObject1.civs = [request.body.civ1]
+        console.log('unitObject1.civs', unitObject1.civs)
+
         unitObject2.civs = [request.body.civ2]
+        console.log('unitObject2.civs', unitObject2.civs)
+
         unitObject1.fullNameOfCiv = ''
         unitObject2.fullNameOfCiv = ''
+
         
-        let attackFullNameOfCivToObject = (object) => {
-            if(object.civs == 'ab'){
-                 object.fullNameOfCiv = 'Abbasid'
-            }
-            if(object.civs == 'ch'){
-                 object.fullNameOfCiv = 'Chinese'
-            }
-            if(object.civs == 'hr'){
-                 object.fullNameOfCiv = 'Holy Roman Empire'
-            }
-            if(object.civs == 'en'){
-                 object.fullNameOfCiv = 'English'
-            }
-            if(object.civs == 'de'){
-                 object.fullNameOfCiv = 'Delhi Sultanate'
-            }
-            if(object.civs == 'fr'){
-                 object.fullNameOfCiv = 'French'
-            }
-            if(object.civs == 'mo'){
-                 object.fullNameOfCiv = 'Mongols'
-            }
-            if(object.civs == 'ru'){
-                 object.fullNameOfCiv = 'Rus'
-            }
-            if(object.civs == 'ot'){
-                 object.fullNameOfCiv = 'Ottoman'
-            }
-            if(object.civs == 'ma'){
-                 object.fullNameOfCiv = 'Malians'
-            }
-        }
+        let attackFullNameOfCivToObject = (unitObject) => {
+            const selectedCiv = civs.find((element) => {
+                return element.value === unitObject.civs[0];
+            });
+        
+            console.log('selectedCiv', selectedCiv);
+            return selectedCiv ? selectedCiv.name : undefined;
+        };
+        
+        // let test = attackFullNameOfCivToObject({civs: ['ab']})
+        // console.log('test', test)
+        // let attackFullNameOfCivToObject = (object) => {
+        //     if(object.civs == 'ab'){
+        //          object.fullNameOfCiv = 'Abbasid'
+        //     }
+        //     else if(object.civs == 'ch'){
+        //          object.fullNameOfCiv = 'Chinese'
+        //     }
+        //     else if(object.civs == 'hr'){
+        //          object.fullNameOfCiv = 'Holy Roman Empire'
+        //     }
+        //     else if(object.civs == 'en'){
+        //          object.fullNameOfCiv = 'English'
+        //     }
+        //     else if(object.civs == 'de'){
+        //          object.fullNameOfCiv = 'Delhi Sultanate'
+        //     }
+        //     else if(object.civs == 'fr'){
+        //          object.fullNameOfCiv = 'French'
+        //     }
+        //     else if(object.civs == 'mo'){
+        //          object.fullNameOfCiv = 'Mongols'
+        //     }
+        //     else if(object.civs == 'ru'){
+        //          object.fullNameOfCiv = 'Rus'
+        //     }
+        //     else if(object.civs == 'ot'){
+        //          object.fullNameOfCiv = 'Ottoman'
+        //     }
+        //     else if(object.civs == ''){
+        //          object.fullNameOfCiv = 'Malians'
+        //     }
+        //     else if(object.civs == 'ma'){
+        //         object.fullNameOfCiv = 'Malians'
+        //     }
+        //     else if(object.civs == 'ma'){
+        //         object.fullNameOfCiv = 'Malians'
+        //     }
+        //     else if(object.civs == 'ma'){
+        //         object.fullNameOfCiv = 'Malians'
+        //     }
+        //     else if(object.civs == 'ma'){
+        //         object.fullNameOfCiv = 'Malians'
+        //     }
+        //     else if(object.civs == 'ma'){
+        //         object.fullNameOfCiv = 'Malians'
+        //     }
+        //     else if(object.civs == 'ma'){
+        //         object.fullNameOfCiv = 'Malians'
+        //     }
+           
+        // }
         attackFullNameOfCivToObject(unitObject1)
         attackFullNameOfCivToObject(unitObject2)
 
         let tech1Array = []
-        for(i=0;i<request.body.techs1.length;i++){
-        let techObjects1 = await db.collection('AOE42ndTechCollection').findOne({_id : ObjectId(request.body.techs1[i])})
-        let techObjectsResult1 = await techObjects1
-        
-        tech1Array.push(techObjectsResult1)
+        if(request.body.techs1){
+            for(let i=0;i<request.body.techs1.length;i++){
+            let techObjects1 = await collection2.findOne({_id : new ObjectId(request.body.techs1[i])})
+            let techObjectsResult1 = await techObjects1
+            tech1Array.push(techObjectsResult1)
        }
+    }
         
        let tech2Array = []
-        for(i=0;i<request.body.techs2.length;i++){
-        let techObjects2 = await db.collection('AOE42ndTechCollection').findOne({_id : ObjectId(request.body.techs2[i])})
+       if(request.body.techs2){
+        console.log(request.body)
+        console.log('techs2',request.body.techs2)
+        console.log('length', request.body.techs2.length)
+        for(let i=0;i<request.body.techs2.length;i++){
+        let techObjects2 = await collection2.findOne({_id : new ObjectId(request.body.techs2[i])})
         let techObjectsResult2 = await techObjects2
         
         tech2Array.push(techObjectsResult2)
        }
+    }
       
 
        if(unitObject1.armor.length == 0){//unit1 add armor values and type if object does not have any
@@ -258,9 +369,8 @@ app.post('/calculate', async (request, response)=>{
        let object2IndexOfRangedArmor = unitObject2.armor.findIndex(x=>x.type === 'ranged')
        let object2IndexOfMeleeArmor = unitObject2.armor.findIndex(x=>x.type === 'melee')
 
-
-       for(eachTechObject of tech1Array){//iterates through each select tech
-        for(effectObject of eachTechObject.effects){//iterates through each tech effect
+       for(let eachTechObject of tech1Array){//iterates through each select tech
+        for(let effectObject of eachTechObject.effects){//iterates through each tech effect
             
             if(effectObject.property == "rangedAttack" && unitObject1.weapons[0].type == "ranged"){//dont need to iterate through unitObject weapons because a unit only has one weapon type
                 unitObject1.weapons[0].damage = maths(effectObject.effect, unitObject1.weapons[0].damage, effectObject.value)
@@ -287,8 +397,8 @@ app.post('/calculate', async (request, response)=>{
         }
         //unit 2
        }
-       for(eachTechObject of tech2Array){//iterates through each select tech
-        for(effectObject of eachTechObject.effects){//iterates through each tech effect
+       for(let eachTechObject of tech2Array){//iterates through each select tech
+        for(let effectObject of eachTechObject.effects){//iterates through each tech effect
             
             
             if(effectObject.property == "rangedAttack" && unitObject2.weapons[0].type == "ranged"){//dont need to iterate through unitObject weapons because a unit only has one weapon type
@@ -319,8 +429,8 @@ app.post('/calculate', async (request, response)=>{
    
        const numberOfUnits1 = request.body.numberOfUnits1 ? request.body.numberOfUnits1 : 1
        const teamOneHitpoints = unitObject1.hitpoints * numberOfUnits1
-       const teamOneDamage = unitObject1.weapons[0].damage 
-       const teamOneAttackSpeed = unitObject1.weapons[0].speed
+       const teamOneDamage = unitObject1.weapons[0] ? unitObject1.weapons[0].damage : 0
+       const teamOneAttackSpeed = unitObject1.weapons[0] ? unitObject1.weapons[0].speed : 0
        //const teamOneMeleeArmor = unitObject1.armor[object1IndexOfMeleeArmor].value
        const teamOneRangedArmor = unitObject1.armor[object1IndexOfRangedArmor].value
        let teamOneWeaponModifier = 0
@@ -328,34 +438,34 @@ app.post('/calculate', async (request, response)=>{
        
        const numberOfUnits2 = request.body.numberOfUnits2 ? request.body.numberOfUnits2 : 1
        const teamTwoHitpoints = unitObject2.hitpoints * numberOfUnits2
-       const teamTwoDamage = unitObject2.weapons[0].damage
-       const teamTwoAttackSpeed = unitObject2.weapons[0].speed
+       const teamTwoDamage = unitObject2.weapons[0] ? unitObject2.weapons[0].damage : 0
+       const teamTwoAttackSpeed = unitObject2.weapons[0] ? unitObject2.weapons[0].speed : 0
        //const teamTwoMeleeArmor = unitObject2.armor[object2IndexOfMeleeArmor].value
        const teamTwoRangedArmor = unitObject2.armor[object2IndexOfRangedArmor].value
        let teamTwoWeaponModifier = 0
        let teamTwoRelevantArmor = 0
        
 
-       
+       console.log('modifiers', unitObject1.weapons[0].modifiers.length)
        //check if weapon modifier should be used
-       if(unitObject1.weapons[0].modifiers && unitObject1.weapons[0].modifiers[0].target.class[0].every((unitClass)=>unitObject2.displayClasses[0].toLowerCase().includes(unitClass))){
+       if(unitObject1.weapons.length !== 0 && unitObject1.weapons[0].modifiers.length !==0 && unitObject1.weapons[0].modifiers[0].target.class[0].every((unitClass)=>unitObject2.displayClasses[0].toLowerCase().includes(unitClass))){
         teamOneWeaponModifier = unitObject1.weapons[0].modifiers[0].value
        }
        else{
         teamOneWeaponModifier = 0
        }
-       if(unitObject2.weapons[0].modifiers && unitObject2.weapons[0].modifiers[0].target.class[0].every((unitClass)=>unitObject1.displayClasses[0].toLowerCase().includes(unitClass))){
+       if(unitObject2.weapons.length !== 0 && unitObject2.weapons[0].modifiers.length !== 0 && unitObject2.weapons[0].modifiers[0].target.class[0].every((unitClass)=>unitObject1.displayClasses[0].toLowerCase().includes(unitClass))){
         teamTwoWeaponModifier = unitObject2.weapons[0].modifiers[0].value
        }
        else{
         teamTwoWeaponModifier = 0
        }
        //find relevant armor unit 1
-       if(unitObject1.weapons[0].type == 'ranged' && unitObject2.armor[0].value > 0 && object2IndexOfRangedArmor > -1){
+       if(unitObject1.weapons.length !== 0 && unitObject1.weapons[0].type == 'ranged' && unitObject2.armor[0].value > 0 && object2IndexOfRangedArmor > -1){
         teamTwoRelevantArmor = unitObject2.armor[object2IndexOfRangedArmor].value
         unitObject2.relevantArmorType = 'ranged'
        }
-       else if(unitObject1.weapons[0].type == 'melee' && unitObject2.armor[0].value > 0 && object2IndexOfMeleeArmor > -1){
+       else if(unitObject1.weapons.length !== 0 && unitObject1.weapons[0].type == 'melee' && unitObject2.armor[0].value > 0 && object2IndexOfMeleeArmor > -1){
         teamTwoRelevantArmor = unitObject2.armor[object2IndexOfMeleeArmor].value
         unitObject2.relevantArmorType = 'melee'
        }else{
@@ -363,11 +473,11 @@ app.post('/calculate', async (request, response)=>{
         unitObject2.relevantArmorType = 'none'
        }
        // unit 2
-       if(unitObject2.weapons[0].type == 'ranged' && unitObject1.armor[0].value > 0 && object1IndexOfRangedArmor > -1){
+       if(unitObject2.weapons.length !== 0 && unitObject2.weapons[0].type == 'ranged' && unitObject1.armor[0].value > 0 && object1IndexOfRangedArmor > -1){
         teamOneRelevantArmor = unitObject1.armor[object1IndexOfRangedArmor].value
         unitObject1.relevantArmorType = 'ranged'
        }
-       else if(unitObject2.weapons[0].type == 'melee' && unitObject1.armor[0].value > 0 && object1IndexOfMeleeArmor > -1){
+       else if(unitObject2.weapons.length !== 0 && unitObject2.weapons[0].type == 'melee' && unitObject1.armor[0].value > 0 && object1IndexOfMeleeArmor > -1){
         teamOneRelevantArmor = unitObject1.armor[object1IndexOfMeleeArmor].value 
         unitObject1.relevantArmorType = 'melee'
        }else{
@@ -390,6 +500,8 @@ app.post('/calculate', async (request, response)=>{
        const teamTwoTimeToKillTeamOne = Math.round((teamOneHitpoints / teamTwoTrueDamage)*100)/100
     
        let result
+
+       
 
        if(teamOneTimeToKillTeamTwo < teamTwoTimeToKillTeamOne){
          result = {
@@ -420,7 +532,9 @@ app.post('/calculate', async (request, response)=>{
             timeToKillOtherTeam : teamTwoTimeToKillTeamOne,
             
            }
+        
         }
+   
        }
         
        else if(teamOneTimeToKillTeamTwo > teamTwoTimeToKillTeamOne){
@@ -452,13 +566,16 @@ app.post('/calculate', async (request, response)=>{
             timeToKillOtherTeam: teamOneTimeToKillTeamTwo
            }
         }
+        console.log("unitObject1", result.winningTeam)
+console.log("unitObject2", result.losingTeam)
        }
        else{
          result = {
             tieStatement : 'No blood was shed on this day as there is a tie. Please try another combination.'
         }
+        console.log('no blood shit')
        }
-
+       
        response.json(result)
     }     
     catch(err){

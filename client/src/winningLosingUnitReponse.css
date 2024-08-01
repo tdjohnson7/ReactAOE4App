@@ -1,0 +1,26 @@
+td{
+    border-bottom: black 5px solid;
+}
+td{
+    margin-right: 10px;
+}
+
+td{
+    color: white;
+}
+
+dialog{
+    margin-top: 10px;
+    background-color: black;
+    border: white 5px solid;
+}
+
+
+/* table tr:nth-child(odd) td {
+    background-color:rgb(60, 60, 60) 
+}
+table tr:nth-child(even) td {
+    background-color: black;
+} */
+
+

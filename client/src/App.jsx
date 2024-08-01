@@ -1,16 +1,15 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import Form from '../components/Form'
-import Test from '../components/Test'
+import ComponentForm from '/components/ComponentForm'
 import 'vite/modulepreload-polyfill'
+import '../src/App.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
+
 
 function App() {
-  
 
   return (
     <div>
-      <Form></Form>
+      <ComponentForm></ComponentForm>
     </div>
   )
 }

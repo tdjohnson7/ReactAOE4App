@@ -1,3 +1,10 @@
+/* 
+
+
+
+
+
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -66,4 +73,81 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+} */
+
+html{
+  background-color: black;
+}
+*{
+  color: white;
+}
+
+select, option, input, button{color: black;}
+
+
+
+dialog{
+  display: block;
+} 
+
+.mainDiv{
+  border: black solid 5px;
+  display: flex;
+  flex-direction: column;
+  /* background-color: rgb(15, 15, 17); */
+  background-color: black;
+}
+
+.container{
+  /* border: red 5px solid; */
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+
+}
+
+.divOne{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
+
+}
+
+#divFour{
+  /* border: yellow 5px solid; */
+  align-self: center;
+}
+
+
+h1{display: flex;
+justify-content: center;}
+
+section{display: flex;}
+
+select, input{
+  max-width: 50%;
+}
+
+.whiteBorder{
+  border: white 5px solid;
+}
+
+body{
+  background-color: black;
+}
+/* select{display: flex;} */
+
+h2,h3{
+  margin: 20px;
+}
+
+.form-select, input{
+margin: 0 auto;}
+
+
+#submit{
+  margin: 5rem;
 }
