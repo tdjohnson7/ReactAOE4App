@@ -8,6 +8,8 @@ import {Button, Form} from "react-bootstrap"
 // import getUnits1 from "./Functions"
 
 function ComponentForm(){
+
+  const localhost = 'http://localhost:8001'
     
   const [civ1, setCiv1] = useState('ab')
   const [civList1, setCivList1] = useState(civs)
@@ -45,7 +47,7 @@ function ComponentForm(){
     try{
       console.log('getUnits ran')
       // console.log('civ1', civ1)
-        const requestFromMainJS = await fetch("http://localhost:8001/getUnits",{
+        const requestFromMainJS = await fetch("/getUnits",{
             method: 'POST',
             headers: {'Content-type' : 'application/json'},
             body: JSON.stringify({
@@ -69,7 +71,7 @@ async function getAges(selectedUnit, selectedCiv, setAgeFunction, setAgeListFunc
     // setSelectedUnit1()
     try{ 
       console.log('getAges ran')
-        const requestFromMainJS = await fetch("http://localhost:8001/getSelectAge",{
+        const requestFromMainJS = await fetch("/getSelectAge",{
             method: 'POST',
             headers: {'Content-type' : 'application/json'},
             body: JSON.stringify({
@@ -98,7 +100,7 @@ async function getAges(selectedUnit, selectedCiv, setAgeFunction, setAgeListFunc
 async function getTechs(selectedAge, selectedCiv, selectedUnit, setTechsList){
   try{     
           console.log('getTechs ran') 
-          const requestFromMainJS = await fetch('http://localhost:8001/getSelectTechs', {
+          const requestFromMainJS = await fetch('/getSelectTechs', {
           method: 'POST',
           headers: {'Content-type': 'application/json'},
           body: JSON.stringify({
@@ -219,7 +221,7 @@ function handleTechChange2(e){
         e.preventDefault()
         console.log('nuke',selectedUnit1, civ1, age1, selectedTechs1, selectedUnit2, civ2, age2, selectedTechs2)
         try{
-          const requestFromMainJS = await fetch("http://localhost:8001/calculate",{
+          const requestFromMainJS = await fetch("/calculate",{
             method: 'POST',
             headers: {'Content-type': 'application/json'},
             body: JSON.stringify({
@@ -267,7 +269,7 @@ useEffect(()=>{
     try{
       console.log('getUnits1 ran')
       // console.log('civ1', civ1)
-        const requestFromMainJS = await fetch("http://localhost:8001/getUnits",{
+        const requestFromMainJS = await fetch("/getUnits",{
             method: 'POST',
             headers: {'Content-type' : 'application/json'},
             body: JSON.stringify({
@@ -297,7 +299,7 @@ useEffect(()=>{
     // setSelectedUnit1()
     try{ 
       console.log('getAges ran')
-        const requestFromMainJS = await fetch("http://localhost:8001/getSelectAge",{
+        const requestFromMainJS = await fetch("/getSelectAge",{
             method: 'POST',
             headers: {'Content-type' : 'application/json'},
             body: JSON.stringify({
@@ -329,7 +331,7 @@ useEffect(()=>{
   async function getTechs1(selectedAge, selectedCiv, selectedUnit, setTechsList){
     try{     
             console.log('getTechs ran') 
-            const requestFromMainJS = await fetch('http://localhost:8001/getSelectTechs', {
+            const requestFromMainJS = await fetch('/getSelectTechs', {
             method: 'POST',
             headers: {'Content-type': 'application/json'},
             body: JSON.stringify({
@@ -358,7 +360,7 @@ useEffect(()=>{
     try{
       console.log('getUnits2 ran')
       // console.log('civ1', civ1)
-        const requestFromMainJS = await fetch("http://localhost:8001/getUnits",{
+        const requestFromMainJS = await fetch("/getUnits",{
             method: 'POST',
             headers: {'Content-type' : 'application/json'},
             body: JSON.stringify({
@@ -385,7 +387,7 @@ useEffect(()=>{
     // setSelectedUnit1()
     try{ 
       console.log('getAges2 ran')
-        const requestFromMainJS = await fetch("http://localhost:8001/getSelectAge",{
+        const requestFromMainJS = await fetch("/getSelectAge",{
             method: 'POST',
             headers: {'Content-type' : 'application/json'},
             body: JSON.stringify({
@@ -417,7 +419,7 @@ useEffect(()=>{
   async function getTechs2(selectedAge, selectedCiv, selectedUnit, setTechsList){
     try{     
             console.log('getTechs ran') 
-            const requestFromMainJS = await fetch('http://localhost:8001/getSelectTechs', {
+            const requestFromMainJS = await fetch('/getSelectTechs', {
             method: 'POST',
             headers: {'Content-type': 'application/json'},
             body: JSON.stringify({
