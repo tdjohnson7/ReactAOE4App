@@ -198,7 +198,7 @@ app.post('/getSelectTechs', async (request, response)=>{
 })
 
 //grab the values within the dropdown list and returns their stats to calculate which team wins and then renders the results page
-app.post('/calculate', async (request, response)=>{
+app.post('/api/calculate', async (request, response)=>{
     try{
         console.log(request.body)
         let unitObject1 = await collection.findOne({'name': request.body.unit1, 'civs': {$in: [request.body.civ1]}, 'age': Number(request.body.age1)})

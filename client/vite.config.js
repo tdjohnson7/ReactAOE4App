@@ -20,13 +20,13 @@ export default defineConfig({
     },
   },
   server: {
-    port: process.env.PORT || 8001,
-    // proxy: {
-    //     '/': {
-    //       target: 'http://localhost:8001',
-    //       changeOrigin: true,
-    //       secure: false,
-    //     }
-    // },
+    // port: process.env.PORT || 8001,
+    proxy: {
+        '/api': {
+          target: 'http://localhost:8001',
+          changeOrigin: true,
+          secure: false,
+        }
+    },
   },
 })
