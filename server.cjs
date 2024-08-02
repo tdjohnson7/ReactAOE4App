@@ -23,7 +23,7 @@ let db,
             console.log(`Connected to Database`)
             collection = await db.collection('AOE42ndCollection')
             collection2 = await db.collection('AOE4TechCollection')
-            app.listen(process.env.PORT || PORT, () => {
+            app.listen(process.env.PORT || "0.0.0.0", () => {
                 console.log(`Server is running on port ${process.env.PORT}`)
             })
             

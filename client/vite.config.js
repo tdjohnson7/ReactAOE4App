@@ -21,9 +21,12 @@ export default defineConfig({
   },
   server: {
     port: process.env.PORT || "0.0.0.0",
-    // proxy: {
-    //   // "/": "http://localhost:8001/", // the address that u serve in the backend 
-    //   // "/api": "http://127.0.0.1:5173/", // the address that u serve in the backend 
-    // },
+    proxy: {
+        '/': {
+          target: 'http://localhost:8001',
+          changeOrigin: true,
+          secure: false,
+        }
+    },
   },
 })
