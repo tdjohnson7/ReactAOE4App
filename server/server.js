@@ -71,7 +71,7 @@ app.use(cors())
 //     }
 // })
 
-app.post('/getUnits', async (request, response)=>{
+app.post('/api/getUnits', async (request, response)=>{
     
     try{
         const units = await collection.distinct('baseId',{civs: {$in:[request.body.selectedCiv]}})
@@ -125,7 +125,7 @@ app.post('/getUnits', async (request, response)=>{
     }
 })
 //dont need ages since the data changed to include every unit in every age
-app.post('/getSelectAge', async (request, response)=>{    
+app.post('/api/getSelectAge', async (request, response)=>{    
     try{
         function reverseFormat(unit) {
             return unit.includes(" ") 
@@ -168,7 +168,7 @@ app.post('/getSelectAge', async (request, response)=>{
     }
 })
 
-app.post('/getSelectTechs', async (request, response)=>{
+app.post('/api/getSelectTechs', async (request, response)=>{
     try{       
         let test = await collection.findOne({'name': request.body.selectText.replace(' ', '-').toLowerCase(), 'civs': {$in: [request.body.selectCiv.toLowerCase()]}, 'age': Number(request.body.selectAge)})
 
