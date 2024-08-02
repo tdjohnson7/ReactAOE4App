@@ -20,7 +20,7 @@ export default defineConfig({
     },
   },
   server: {
-    // port: process.env.PORT,
+    port: process.env.PORT || 8001,
     // proxy: {
     //     '/': {
     //       target: 'http://localhost:8001',
