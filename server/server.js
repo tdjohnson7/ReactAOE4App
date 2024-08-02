@@ -27,7 +27,7 @@ let db,
     collection,
     collection2
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 8001
     
     const mongoConnect = async() =>{
         try{
@@ -37,7 +37,7 @@ const PORT = process.env.PORT
             console.log(`Connected to Database`)
             collection = await db.collection('apostrophe test')
             collection2 = await db.collection('AOE43rdTechCollection')
-            app.listen(PORT, () => {
+            app.listen(PORT, '0.0.0.0', () => {
                 console.log(`Server is running on port ${PORT}`)
             })
             
