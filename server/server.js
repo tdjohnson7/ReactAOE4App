@@ -27,7 +27,7 @@ let db,
     collection,
     collection2
 
-const PORT = process.env.PORT || 10000
+const PORT = process.env.PORT || 4000
     
     const mongoConnect = async() =>{
         try{
