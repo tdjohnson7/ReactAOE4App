@@ -58,6 +58,7 @@ function ComponentForm(){
         console.log('getUnits requestFrom MainJS',requestFromMainJS)
 
         let itemObject = await requestFromMainJS.json()
+        const getUnitsURL = `${renderBackend}/api/getUnits`
         // console.log('item object', itemObject)
         setUnitsFunction([...itemObject])
         // setSelectedUnit1(itemObject[0])
