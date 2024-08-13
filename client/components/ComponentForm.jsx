@@ -6,7 +6,6 @@ import { render } from "react-dom"
 
 // import test from Functions.jsx
 
-// import getUnits1 from "./Functions"
 
 function ComponentForm(){
     
