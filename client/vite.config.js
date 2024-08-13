@@ -25,10 +25,11 @@ export default defineConfig({
         '/api': {
           target: `http://localhost:8001`,
           changeOrigin: true,
+          // rewrite: (path) => path.replace(/^\/api/, ''),
           secure: false,
         }
     },
-    host: '0.0.0.0',
-    port: 4000
+  //   // host: '0.0.0.0',
+  //   // port: 8001
   },
 })
