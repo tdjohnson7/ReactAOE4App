@@ -19,7 +19,7 @@ export default defineConfig({
       input: './src/main.jsx',
     },
   },
-  server: {
+  // server: {
     // port: process.env.PORT || 8001,
     // proxy: {
     //     '/api': {
@@ -32,5 +32,5 @@ export default defineConfig({
     // },
   //   // host: '0.0.0.0',
   //   // port: 8001
-  },
+  // },
 })
