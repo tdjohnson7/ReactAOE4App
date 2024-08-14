@@ -75,7 +75,7 @@ button:focus-visible {
   }
 } */
 
-html{
+html, body, div{
   background-color: black;
 }
 *{
