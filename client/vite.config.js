@@ -16,9 +16,15 @@ export default defineConfig({
   base: '/client/',
   build: {
     manifest: true,
+    cssCodeSplit: true,
     rollupOptions: {
       input: {
         main: './index.html',
+      },
+      output: {
+        entryFileNames: 'assets/main.js',
+        chunkFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/[name].[ext]'
       }
     },
   },
