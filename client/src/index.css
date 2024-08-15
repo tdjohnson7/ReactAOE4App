@@ -141,7 +141,7 @@ body{
 /* select{display: flex;} */
 
 h2,h3{
-  margin: 20px;
+  margin: 20px !important;
 }
 
 .form-select, .form-control{
