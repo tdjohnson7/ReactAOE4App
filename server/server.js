@@ -249,17 +249,6 @@ app.post("/api/calculate", async (request, response) => {
       age: Number(request.body.age2),
     });
 
-    console.log("unitObject1", unitObject1);
-    console.log("request.body", request.body);
-
-    unitObject1.civs = [request.body.civ1];
-    console.log("unitObject1.civs", unitObject1.civs);
-
-    console.log("request.body.civ2", request.body.civ2);
-    unitObject2.civs = [request.body.civ2];
-    console.log("unitObject2", unitObject2);
-    console.log("unitObject2.civs", unitObject2.civs);
-
     unitObject1.fullNameOfCiv = "";
     unitObject2.fullNameOfCiv = "";
 
@@ -272,59 +261,6 @@ app.post("/api/calculate", async (request, response) => {
       return selectedCiv ? selectedCiv.name : undefined;
     };
 
-    // let test = attackFullNameOfCivToObject({civs: ['ab']})
-    // console.log('test', test)
-    // let attackFullNameOfCivToObject = (object) => {
-    //     if(object.civs == 'ab'){
-    //          object.fullNameOfCiv = 'Abbasid'
-    //     }
-    //     else if(object.civs == 'ch'){
-    //          object.fullNameOfCiv = 'Chinese'
-    //     }
-    //     else if(object.civs == 'hr'){
-    //          object.fullNameOfCiv = 'Holy Roman Empire'
-    //     }
-    //     else if(object.civs == 'en'){
-    //          object.fullNameOfCiv = 'English'
-    //     }
-    //     else if(object.civs == 'de'){
-    //          object.fullNameOfCiv = 'Delhi Sultanate'
-    //     }
-    //     else if(object.civs == 'fr'){
-    //          object.fullNameOfCiv = 'French'
-    //     }
-    //     else if(object.civs == 'mo'){
-    //          object.fullNameOfCiv = 'Mongols'
-    //     }
-    //     else if(object.civs == 'ru'){
-    //          object.fullNameOfCiv = 'Rus'
-    //     }
-    //     else if(object.civs == 'ot'){
-    //          object.fullNameOfCiv = 'Ottoman'
-    //     }
-    //     else if(object.civs == ''){
-    //          object.fullNameOfCiv = 'Malians'
-    //     }
-    //     else if(object.civs == 'ma'){
-    //         object.fullNameOfCiv = 'Malians'
-    //     }
-    //     else if(object.civs == 'ma'){
-    //         object.fullNameOfCiv = 'Malians'
-    //     }
-    //     else if(object.civs == 'ma'){
-    //         object.fullNameOfCiv = 'Malians'
-    //     }
-    //     else if(object.civs == 'ma'){
-    //         object.fullNameOfCiv = 'Malians'
-    //     }
-    //     else if(object.civs == 'ma'){
-    //         object.fullNameOfCiv = 'Malians'
-    //     }
-    //     else if(object.civs == 'ma'){
-    //         object.fullNameOfCiv = 'Malians'
-    //     }
-
-    // }
     attackFullNameOfCivToObject(unitObject1);
     attackFullNameOfCivToObject(unitObject2);
 
