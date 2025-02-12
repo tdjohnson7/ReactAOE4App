@@ -71,7 +71,7 @@ app.post("/api/getUnits", async (request, response) => {
     const units = await collection.distinct("baseId", {
       civs: { $in: [request.body.selectedCiv] },
     });
-
+    console.log(units);
     // const agg = [
     //     {
     //         '$match': {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ServerResponseModal from "./ServerResponseModal.jsx";
 import civs from "../../civs.js";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Card } from "react-bootstrap";
 // import '../src/index.css'
 import { render } from "react-dom";
 
