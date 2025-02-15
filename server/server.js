@@ -68,52 +68,24 @@ app.use(cors());
 
 app.post("/api/getUnits", async (request, response) => {
   try {
-    const units = await collection.distinct("baseId", {
-      civs: { $in: [request.body.selectedCiv] },
-    });
-    console.log(units);
-    // const agg = [
-    //     {
-    //         '$match': {
-    //           'civs': request.body.selectedCiv
-    //         }
-    //       }, {
-    //         '$group': {
-    //           '_id': '$baseId',
-    //           'pbgid': {
-    //             '$first': '$pbgid'
-    //           }
-    //         }
-    //       }
-    //   ];
+    const unitsCursor = await collection
+      .find({
+        civs: { $in: [request.body.selectedCiv] },
+      })
+      .sort({ baseId: 1 });
+    const result = await unitsCursor.toArray();
 
-    //   const cursor = await collection.aggregate(agg)
-    //   const result = await cursor.toArray()
-
-    // result.forEach((obj)=>
-    //     obj._id.includes("-")
-    //         ? obj._id = obj._id.split('-').map((word)=>word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
-    //         : obj._id = obj._id.charAt(0).toUpperCase() + obj._id.slice(1))
-
-    const unitsMod = await units.map((unit) =>
-      unit.includes("-")
-        ? unit
+    let unitsMod = await result.map((unit) => {
+      unit.baseId.includes("-")
+        ? (unit.baseId = unit.baseId
             .split("-")
             .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(" ")
-        : unit.charAt(0).toUpperCase() + unit.slice(1)
-    );
+            .join(" "))
+        : (unit.baseId =
+            unit.baseId.charAt(0).toUpperCase() + unit.baseId.slice(1));
+      return unit;
+    });
 
-    // .split('-').map((word)=>word.charAt[0].toUpperCase() + slice(1)).join(' ')
-
-    //     const arrayResult = result.map(obj => Object.values(obj))
-    //     const arrayResultAlphabetized = arrayResult.sort((a,b)=>{
-    //         if (a[0] > b[0]) return 1;
-    //         if (a[0] < b [0]) return -1
-    // })
-    // console.log("arrayResultAlphabetized", arrayResultAlphabetized)
-    // console.log(arrayResultAlphabetized)
-    // response.json(arrayResultAlphabetized)
     response.json(unitsMod);
   } catch (err) {
     console.log(err);
@@ -130,7 +102,7 @@ app.post("/api/getSelectAge", async (request, response) => {
             .join("-")
         : unit.charAt(0).toLowerCase() + unit.slice(1);
     }
-
+    console.log("server getSelectAge", request.body.selectText);
     const reverseSelectedText = reverseFormat(request.body.selectText);
     const itemsAges = await collection
       .find(
@@ -226,6 +198,7 @@ app.post("/api/getSelectTechs", async (request, response) => {
 //grab the values within the dropdown list and returns their stats to calculate which team wins and then renders the results page
 app.post("/api/calculate", async (request, response) => {
   try {
+    console.log(request.body.unit1);
     function reverseFormat(unit) {
       return unit.includes(" ")
         ? unit
@@ -234,7 +207,6 @@ app.post("/api/calculate", async (request, response) => {
             .join("-")
         : unit.charAt(0).toLowerCase() + unit.slice(1);
     }
-    console.log(reverseFormat("Archer"));
     console.log(request.body);
     let unitObject1 = await collection.findOne({
       // name: request.body.unit1,
