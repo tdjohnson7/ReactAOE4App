@@ -68,6 +68,7 @@ app.use(cors());
 
 app.post("/api/getUnits", async (request, response) => {
   try {
+    console.log("getunits request", request.body);
     const unitsCursor = await collection
       .find({
         civs: { $in: [request.body.selectedCiv] },

@@ -4,6 +4,7 @@ import civs from "../../civs.js";
 import { Button, Form, Card, Dropdown } from "react-bootstrap";
 // import '../src/index.css'
 import { render } from "react-dom";
+import IconSelect from "./iconSelect.jsx";
 
 // import test from Functions.jsx
 
@@ -36,8 +37,8 @@ function ComponentForm() {
   const [result, setResult] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // const renderBackend = "https://reactaoe4app.onrender.com";
-  const renderBackend = "http://localhost:8001";
+  const renderBackend = "https://reactaoe4app.onrender.com";
+  // const renderBackend = "http://localhost:8001";
 
   function seeShowModal() {
     console.log("see Show Modal", showModal);
@@ -456,6 +457,8 @@ function ComponentForm() {
                 </option>
               ))}
             </Form.Select> */}
+
+            <IconSelect unitObjects={result} />
 
             <Dropdown
               id="selectUnitNumberOne"
